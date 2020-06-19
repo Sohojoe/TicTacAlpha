@@ -157,7 +157,7 @@ MonoBehaviour:
         type: 3}
     envIdDefault: ConnectedAlpha-v0
     trainingNumEnvsDefault: 3
-    inferenceNumEnvsDefault: 3
+    inferenceNumEnvsDefault: 1
   DebugSkipPopUp: 1
 --- !u!4 &171251818
 Transform:
