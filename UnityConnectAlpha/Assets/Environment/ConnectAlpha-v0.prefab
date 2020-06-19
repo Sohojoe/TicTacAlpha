@@ -28,7 +28,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7315798664577296123}
+  - {fileID: 1181895239423542190}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,10 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paddingBetweenEnvs: 1
   bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 10, y: 1, z: 10}
+    m_Center: {x: 0, y: -0.1, z: 0}
+    m_Extent: {x: 2.5, y: 0.050000004, z: 2.5}
   CreateUniquePhysicsScene: 0
---- !u!1001 &2738286706899233695
+--- !u!1001 &6043907849357086410
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -118,9 +118,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfcec7f79cfa94aca880f6491293fad5, type: 3}
---- !u!4 &7315798664577296123 stripped
+--- !u!4 &1181895239423542190 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4865762675383012708, guid: cfcec7f79cfa94aca880f6491293fad5,
     type: 3}
-  m_PrefabInstance: {fileID: 2738286706899233695}
+  m_PrefabInstance: {fileID: 6043907849357086410}
   m_PrefabAsset: {fileID: 0}

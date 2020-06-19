@@ -158,7 +158,7 @@ MonoBehaviour:
     envIdDefault: ConnectedAlpha-v0
     trainingNumEnvsDefault: 3
     inferenceNumEnvsDefault: 3
-  DebugSkipPopUp: 0
+  DebugSkipPopUp: 1
 --- !u!4 &171251818
 Transform:
   m_ObjectHideFlags: 0

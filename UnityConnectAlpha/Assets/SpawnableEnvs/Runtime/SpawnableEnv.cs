@@ -27,10 +27,15 @@ namespace SpawnableEnvs
         public void UpdateBounds()
         {
             bounds.size = Vector3.zero; // reset
-            Collider[] colliders = GetComponentsInChildren<Collider>();
-            foreach (Collider col in colliders)
+            foreach (BoxCollider col in GetComponentsInChildren<BoxCollider>())
             {
-                bounds.Encapsulate(col.bounds);
+                var b = new Bounds();
+                b.center = col.transform.position;
+                b.size = new Vector3(
+                    col.size.x * col.transform.lossyScale.x,
+                    col.size.y * col.transform.lossyScale.y,
+                    col.size.z * col.transform.lossyScale.z);
+                bounds.Encapsulate(b);
             }
             TerrainCollider[] terrainColliders = GetComponentsInChildren<TerrainCollider>();
             foreach (TerrainCollider col in terrainColliders)
