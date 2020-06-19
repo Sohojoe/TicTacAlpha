@@ -1,2 +1,2 @@
-# ConnectAlpha
-attempt at implementing the Udacity connect four Alpha Zero module in ml-agents
+# TicTacAlpha
+attempt at implementing the Udacity TicTacToe Alpha Zero module in ml-agents
