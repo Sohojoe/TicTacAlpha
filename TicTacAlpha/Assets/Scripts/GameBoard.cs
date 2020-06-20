@@ -9,10 +9,10 @@ public class GameBoard : MonoBehaviour
     public Cell Cell;
 
     List<Cell> _cells;
-    List<int> _reservedActions;
     public int Size;
 
-    public bool _hasInitializedBoard;
+    bool _hasInitializedBoard;
+    int _nextPlayerId;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +32,6 @@ public class GameBoard : MonoBehaviour
             // check is same size
             return;
         }
-        _reservedActions = new List<int>();
         _cells = new List<Cell>();
         Vector3 position = this.transform.position;
         position.x -= ((float)size-1) / 2f;
@@ -53,6 +52,7 @@ public class GameBoard : MonoBehaviour
             position.x -= (float)size;
             position.z -= 1f;
         }
+        ResetBoard();
         _hasInitializedBoard = true;
     }
     public void ResetBoard()
@@ -61,7 +61,7 @@ public class GameBoard : MonoBehaviour
         {
             cells.TeamId = 0;
         }
-        _reservedActions = new List<int>();
+        _nextPlayerId = 1;
     }
 
     public void CollectObservationsForPlayer(VectorSensor sensor, int playerId)
@@ -94,25 +94,29 @@ public class GameBoard : MonoBehaviour
     {
         var freeSpaces = _cells
             .Where(x=>x.TeamId == 0)
-            .Where(x=>!_reservedActions.Contains(x.Action))
             .ToList();
         return freeSpaces;
     }
 
-    public void ReserveAction(int action)
-    {
-        _reservedActions.Add(action);
-    }
 
     public void TakeAction(int action, int playerId)
     {
         var cell = _cells.First(x=>x.Action == action);
         cell.TeamId = playerId;
+        _nextPlayerId = playerId == 1 ? 2 : 1;
     }
 
     public bool HasEnded()
     {
         var freeSpace = _cells.FirstOrDefault(x=>x.TeamId == 0);
         return freeSpace == null;
+    }
+
+    public bool ShouldRequestDecision(int playerId)
+    {
+        // TODO if human, return false
+        if (HasEnded())
+            return false;
+        return _nextPlayerId == playerId;
     }
 }

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2739586622439575658}
   - component: {fileID: 9057585321578412938}
   - component: {fileID: 1427892532248731715}
-  - component: {fileID: 8315848796650490653}
   m_Layer: 0
   m_Name: TicTac3x3Agent
   m_TagString: Untagged
@@ -52,6 +51,7 @@ MonoBehaviour:
   Size: 3
   WinCount: 3
   PieRule: 0
+  PlayerId: 1
 --- !u!114 &1427892532248731715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,17 +76,3 @@ MonoBehaviour:
   m_BehaviorName: My Behavior
   TeamId: 0
   m_UseChildSensors: 1
---- !u!114 &8315848796650490653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8933370733304335510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DecisionPeriod: 1
-  TakeActionsBetweenDecisions: 1

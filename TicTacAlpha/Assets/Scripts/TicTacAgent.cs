@@ -24,6 +24,20 @@ public class TicTacAgent : Agent
     SpawnableEnv _spawnableEnv;
     GameBoard _gameBoard;
 
+    void FixedUpdate()
+    {
+        if (_gameBoard.ShouldRequestDecision(PlayerId))
+            RequestDecision();
+        else if (_gameBoard.HasEnded())
+        {
+            _gameBoard.ResetBoard();
+        }   
+    }
+
+    void Update()
+    {
+         
+    }
 
     override public void Initialize() 
     {
@@ -51,10 +65,6 @@ public class TicTacAgent : Agent
     {
         int action = (int)vectorAction[0];
         _gameBoard.TakeAction(action, PlayerId);
-        if (_gameBoard.HasEnded())
-        {
-            _gameBoard.ResetBoard();
-        }
     }
 
     override public void OnEpisodeBegin()
@@ -70,7 +80,6 @@ public class TicTacAgent : Agent
         int actionIdx = Random.Range(0, freeSpaces.Count);
         var cell = freeSpaces[actionIdx];
         int action = cell.Action;
-        _gameBoard.ReserveAction(action);
         actionsOut[0] = (float)action;
     }
 
