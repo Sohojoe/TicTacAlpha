@@ -152,10 +152,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentSpawner:
     spawnableEnvDefinitions:
-    - envId: ConnectedAlpha-v0
+    - envId: TicTacAlpha3x3-v0
       envPrefab: {fileID: 5427030044115644752, guid: cc01692f5dffc45eea2fc83d5c7a8be3,
         type: 3}
-    envIdDefault: ConnectedAlpha-v0
+    - envId: TicTacAlpha6x6-v0
+      envPrefab: {fileID: 5427030044115644752, guid: 7148a3b1f6a9e47c2a734a285a1cd46c,
+        type: 3}
+    envIdDefault: TicTacAlpha6x6-v0
     trainingNumEnvsDefault: 3
     inferenceNumEnvsDefault: 1
   DebugSkipPopUp: 1
