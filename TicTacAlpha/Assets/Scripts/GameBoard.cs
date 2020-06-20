@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Unity.MLAgents.Sensors;
 
 public class GameBoard : MonoBehaviour
 {
-    public int[] CellStates;
-    public GameObject Cell;
+    public Cell Cell;
 
-    List<List<GameObject>> _cells;
+    List<Cell> _cells;
+    List<int> _reservedActions;
     public int Size;
+
+    public bool _hasInitializedBoard;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,25 +27,92 @@ public class GameBoard : MonoBehaviour
     
     public void InitializeBoard(int size)
     {
-        CellStates = Enumerable.Range(0, size*size).Select(x=>0).ToArray();
-        _cells = new List<List<GameObject>>();
+        if (_hasInitializedBoard)
+        {
+            // check is same size
+            return;
+        }
+        _reservedActions = new List<int>();
+        _cells = new List<Cell>();
         Vector3 position = this.transform.position;
         position.x -= ((float)size-1) / 2f;
         position.y = 0f;
         position.z += ((float)size-1) / 2f;
-        for (int x = 0; x < size; x++)
+        for (int row = 0; row < size; row++)
         {
-            var row = new List<GameObject>();
-            for (int z = 0; z < size; z++)
+            for (int column = 0; column < size; column++)
             {
                 var cell = GameObject.Instantiate(Cell, position, this.transform.rotation);
                 cell.transform.parent = this.transform;
                 position.x += 1f;
-                row.Add(cell);
+                _cells.Add(cell);
+                cell.Action = _cells.IndexOf(cell);
+                cell.Row = row;
+                cell.Column = column;
             }
             position.x -= (float)size;
             position.z -= 1f;
-            _cells.Add(row);
         }
+        _hasInitializedBoard = true;
+    }
+    public void ResetBoard()
+    {
+        foreach (var cells in _cells)
+        {
+            cells.TeamId = 0;
+        }
+        _reservedActions = new List<int>();
+    }
+
+    public void CollectObservationsForPlayer(VectorSensor sensor, int playerId)
+    {
+        if (playerId == 1)
+        {
+            DoCollectObservationsForPlayer(sensor, 1);
+            DoCollectObservationsForPlayer(sensor, 2);
+        }
+        else if (playerId == 2)
+        {
+            DoCollectObservationsForPlayer(sensor, 2);
+            DoCollectObservationsForPlayer(sensor, 1);
+        }
+        else
+        {
+            throw new System.ArgumentException($"{nameof(playerId)}");
+        }
+    }
+    void DoCollectObservationsForPlayer(VectorSensor sensor, int playerId)
+    {
+        foreach (var cell in _cells)
+        {
+            bool status = cell.TeamId == playerId;
+            sensor.AddObservation(status);
+        }
+    }
+
+    public List<Cell> GetFreeSpaces()
+    {
+        var freeSpaces = _cells
+            .Where(x=>x.TeamId == 0)
+            .Where(x=>!_reservedActions.Contains(x.Action))
+            .ToList();
+        return freeSpaces;
+    }
+
+    public void ReserveAction(int action)
+    {
+        _reservedActions.Add(action);
+    }
+
+    public void TakeAction(int action, int playerId)
+    {
+        var cell = _cells.First(x=>x.Action == action);
+        cell.TeamId = playerId;
+    }
+
+    public bool HasEnded()
+    {
+        var freeSpace = _cells.FirstOrDefault(x=>x.TeamId == 0);
+        return freeSpace == null;
     }
 }

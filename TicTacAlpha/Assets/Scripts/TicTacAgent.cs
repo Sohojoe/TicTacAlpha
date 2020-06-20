@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using SpawnableEnvs;
+using System.Linq;
 
 public class TicTacAgent : Agent
 {
@@ -16,6 +17,8 @@ public class TicTacAgent : Agent
     public int WinCount = 3;
     [Tooltip("Pie rule allows the 2nd player to take the position of the 1st players 1st go")]
     public bool PieRule = false;
+    [Tooltip("Which player. 1 or 2")]
+    public int PlayerId = 1;
 
 
     SpawnableEnv _spawnableEnv;
@@ -36,7 +39,7 @@ public class TicTacAgent : Agent
 
     override public void CollectObservations(VectorSensor sensor)
     {
-        
+        _gameBoard.CollectObservationsForPlayer(sensor, PlayerId);
     }
 
     override public void CollectDiscreteActionMasks(DiscreteActionMasker actionMasker)
@@ -46,7 +49,12 @@ public class TicTacAgent : Agent
 
     override public void OnActionReceived(float[] vectorAction) 
     {
-        
+        int action = (int)vectorAction[0];
+        _gameBoard.TakeAction(action, PlayerId);
+        if (_gameBoard.HasEnded())
+        {
+            _gameBoard.ResetBoard();
+        }
     }
 
     override public void OnEpisodeBegin()
@@ -54,6 +62,42 @@ public class TicTacAgent : Agent
         
     }
 
+    override public void Heuristic(float[] actionsOut)
+    {
+        var freeSpaces = _gameBoard.GetFreeSpaces();
+        if (freeSpaces.Count == 0)
+            return;
+        int actionIdx = Random.Range(0, freeSpaces.Count);
+        var cell = freeSpaces[actionIdx];
+        int action = cell.Action;
+        _gameBoard.ReserveAction(action);
+        actionsOut[0] = (float)action;
+    }
+
+
+    int GetMaxIndex(float[] vector)
+    {
+        float maxValue = float.MinValue;
+        var draws = new List<int>();
+        for (int i = 0; i < vector.Length; i++)
+        {
+            float value = vector[i];
+            if (value > maxValue)
+            {
+                maxValue = value;
+                draws = new List<int>();
+                draws.Add(i);
+            }
+            if (value == maxValue)
+            {
+                draws.Add(i);
+            }
+        }
+        var winIdx = Random.Range(0, draws.Count);
+        var maxIdx = draws[winIdx];
+        return maxIdx;
+
+    } 
 
 
 }
