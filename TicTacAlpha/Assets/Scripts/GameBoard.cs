@@ -32,6 +32,7 @@ public class GameBoard : MonoBehaviour
             // check is same size
             return;
         }
+        Size = size;
         _cells = new List<Cell>();
         Vector3 position = this.transform.position;
         position.x -= ((float)size-1) / 2f;
@@ -104,6 +105,74 @@ public class GameBoard : MonoBehaviour
         var cell = _cells.First(x=>x.Action == action);
         cell.TeamId = playerId;
         _nextPlayerId = playerId == 1 ? 2 : 1;
+        UpdateScore(action);
+    }
+
+    public List<int> LastHorizontal;
+    public List<int> LastVertical;
+    public List<int> LastLeftToRight;
+    public List<int> LastRightToLeft;
+    public int LastRow;
+    public int LastColumn;
+    public int LastTeamId;
+
+    void UpdateScore(int action)
+    {
+        LastHorizontal = new List<int>();
+        LastVertical = new List<int>();
+        LastLeftToRight = new List<int>();
+        LastRightToLeft = new List<int>();
+        Cell cell = _cells.First(x=>x.Action == action);
+        int row = cell.Row;
+        int col = cell.Column;
+        LastRow = cell.Row;
+        LastColumn = cell.Column;
+        LastTeamId = cell.TeamId;
+        int offset = _cells.First(x=>x.Row == row && x.Column == 0).Action;
+        for (int i = 0; i < Size; i++)
+        {
+            int idx = offset+i;
+            cell = _cells[idx];
+            LastHorizontal.Add(cell.TeamId);
+        }
+        offset = _cells.First(x=>x.Row == 0 && x.Column == col).Action;
+        for (int i = 0; i < Size; i++)
+        {
+            int idx = offset+(i*Size);
+            cell = _cells[idx];
+            LastVertical.Add(cell.TeamId);
+        }
+        int neg = row < col ? row : col;
+        offset = _cells.First(x=>x.Row == row-neg && x.Column == col-neg).Action;
+        for (int i = 0; i < Size; i++)
+        {
+            if (col-neg + i >= Size)
+                break;
+            int idx = offset + i + (i*Size);
+            if (idx >= _cells.Count)
+                break;
+            if (idx < 0)
+                continue;
+            cell = _cells[idx];
+            LastLeftToRight.Add(cell.TeamId);
+        }
+        var negCol = Size-1-col;
+        var offsetA = row > negCol ? negCol : row;
+        offset = _cells.First(x=>x.Row == row-offsetA && x.Column == col+offsetA).Action;
+        for (int i = 0; i < Size; i++)
+        {
+            if ((col+offsetA) - i < 0)
+                break;
+            int idx = offset - i;
+            idx += i*Size;
+            if (idx >= _cells.Count)
+                break;
+            if (idx < 0)
+                continue;
+            cell = _cells[idx];
+            LastRightToLeft.Add(cell.TeamId);
+        }
+
     }
 
     public bool HasEnded()
